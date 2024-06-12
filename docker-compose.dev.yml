@@ -1,4 +1,5 @@
 services:
+
   frontend:
     build:
       context: ./frontend
@@ -14,3 +15,23 @@ services:
 
         - action: rebuild
           path: package.json
+    networks:
+      - destro
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    depends_on:
+      - frontend  
+    volumes:
+      - ./nginx/gateway.conf:/etc/nginx/nginx.conf
+    networks:
+      - destro
+
+networks:
+  destro:
+    driver: bridge
+
+volumes:
+  destro:
