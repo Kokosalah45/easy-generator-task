@@ -1,8 +1,23 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthService } from './services/auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { SigninUserDTO } from './dtos/sigin-user.dto';
 import { AlreadyExistException } from 'src/shared/errors/AlreadyExistException';
+import { AuthGuard } from './guards/auth.guard';
+import { MeDTO } from './dtos/me.dto';
+import { Request } from 'express';
+import { RequestWithUser } from './interfaces/RequestWithUser';
 
 @Controller('auth')
 export class AuthController {
@@ -26,13 +41,12 @@ export class AuthController {
     return await this.authService.signIn(user);
   }
 
-  //   @Post('signout')
-  //   async signOut() {
-  //     return 'signout';
-  //   }
-
-  //   @Post('me')
-  //   async me() {
-  //     return 'me';
-  //   }
+  @UseGuards(AuthGuard)
+  @Get('me')
+  @UseInterceptors(ClassSerializerInterceptor)
+  me(@Req() req: RequestWithUser): MeDTO {
+    console.log(req.user);
+    const meDTO = new MeDTO(req.user);
+    return meDTO;
+  }
 }

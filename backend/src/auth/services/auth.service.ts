@@ -28,6 +28,7 @@ export class AuthService {
       }
       const accessToken = this.jwtService.sign({
         email: userFound.email,
+        name: userFound.name,
       });
       return {
         access_token: accessToken,
@@ -35,9 +36,16 @@ export class AuthService {
     } catch (error) {
       return null;
     }
-    // change
   }
 
+  async introSpectToken(token: string) {
+    try {
+      const data = this.jwtService.verify(token);
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
   async addUser(user: CreateUserDto) {
     try {
       const password = await this.passwordService.hashPassword(user.password);

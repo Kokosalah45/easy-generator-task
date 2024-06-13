@@ -1,15 +1,28 @@
-import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
 import { User } from '../../users/entities/user';
+import {
+  MAX_PASSWORD_LENGTH,
+  MESSAGES,
+  MIN_PASSWORD_LENGTH,
+  REGEX,
+} from 'src/users/constants/user.validation';
 
 export class SigninUserDTO extends User {
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail(
+    {},
+    {
+      message: MESSAGES.EMAIL_INVALID,
+    },
+  )
   email: string;
 
   @IsNotEmpty()
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/, {
-    message:
-      'Password must contain one uppercase letter, one lowercase letter and one number and must be between 10 and 20 characters long',
+  @Length(MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH, {
+    message: MESSAGES.PASSWORD_LENGTH_INVALID,
+  })
+  @Matches(REGEX.PASSWORD, {
+    message: MESSAGES.PASSWORD_FORMAT_INVALID,
   })
   password: string;
 }
