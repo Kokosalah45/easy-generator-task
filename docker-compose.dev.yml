@@ -1,16 +1,15 @@
 services:
-
   mydb:
     image: mongo
     restart: always
     ports:
-      - "27017:27017"
+      - '27017:27017'
     networks:
       - destro
     volumes:
       - ./data:/data/db
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.stats()"]
+      test: ['CMD', 'mongo', '--eval', 'db.stats()']
       interval: 10s
       timeout: 5s
       retries: 3
@@ -21,6 +20,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
+    ports:
+      - '3001:3001'
     depends_on:
       - mydb
     develop:
@@ -31,7 +32,7 @@ services:
         - action: rebuild
           path: package.json
     restart: always
-    
+
     networks:
       - destro
     env_file:
@@ -41,7 +42,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    command: ["npm", "run" , "dev"]
+    command: ['npm', 'run', 'dev']
     develop:
       watch:
         - action: sync
@@ -50,7 +51,7 @@ services:
 
         - action: rebuild
           path: package.json
- 
+
     networks:
       - destro
 
@@ -58,10 +59,10 @@ services:
     image: nginx:alpine
     restart: on-failure
     ports:
-      - "8080:80"
+      - '8080:80'
     depends_on:
-        - backend
-        - frontend
+      - backend
+      - frontend
     volumes:
       - ./nginx/gateway.conf:/etc/nginx/nginx.conf
     networks:
