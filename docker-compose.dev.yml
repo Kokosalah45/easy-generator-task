@@ -1,27 +1,41 @@
 services:
+
+  mydb:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      - destro
+    volumes:
+      - ./data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.stats()"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    env_file:
+      - .env
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
-  
+    depends_on:
+      - mydb
     develop:
       watch:
         - action: sync
           path: ./backend
           target: /app
-
         - action: rebuild
           path: package.json
     restart: always
-
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      
+    
     networks:
       - destro
+    env_file:
+      - .env
 
   frontend:
     build:
@@ -46,10 +60,8 @@ services:
     ports:
       - "8080:80"
     depends_on:
-        backend:
-          condition: service_healthy 
-        frontend:
-          condition: service_completed_successfully
+        - backend
+        - frontend
     volumes:
       - ./nginx/gateway.conf:/etc/nginx/nginx.conf
     networks:
