@@ -14,27 +14,36 @@ export class AuthService {
   ) {}
 
   async signIn(user: SigninUserDTO) {
-    const userFound = await this.userService.getByEmail(user.email);
-    if (!userFound) {
+    try {
+      const userFound = await this.userService.getByEmail(user.email);
+      if (!userFound) {
+        return null;
+      }
+      const isPasswordValid = await this.passwordService.comparePassword(
+        user.password,
+        userFound.password,
+      );
+      if (!isPasswordValid) {
+        return null;
+      }
+      const accessToken = this.jwtService.sign({
+        email: userFound.email,
+      });
+      return {
+        access_token: accessToken,
+      };
+    } catch (error) {
       return null;
     }
-    const isPasswordValid = await this.passwordService.comparePassword(
-      user.password,
-      userFound.password,
-    );
-    if (!isPasswordValid) {
-      return null;
-    }
-    const accessToken = this.jwtService.sign({
-      email: userFound.email,
-    });
-    return {
-      access_token: accessToken,
-    };
+    // change
   }
 
   async addUser(user: CreateUserDto) {
-    const password = await this.passwordService.hashPassword(user.password);
-    return await this.userService.create({ ...user, password });
+    try {
+      const password = await this.passwordService.hashPassword(user.password);
+      return await this.userService.create({ ...user, password });
+    } catch (error) {
+      return null;
+    }
   }
 }

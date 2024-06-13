@@ -25,12 +25,20 @@ export abstract class MongoRepository<T> implements IBaseRepository<T> {
     return doc;
   }
   async findAll(): Promise<T[]> {
-    const docs = await this._repository.find().populate(this._populateOnFind);
+    const docs = await this._repository
+      .find({
+        __v: 0,
+        _id: 0,
+      })
+      .populate(this._populateOnFind);
     return docs;
   }
   async findById(id: string): Promise<T> {
     const doc = await this._repository
-      .findById(id)
+      .findById(id, {
+        __v: 0,
+        _id: 0,
+      })
       .populate(this._populateOnFind);
     return doc;
   }
@@ -40,14 +48,20 @@ export abstract class MongoRepository<T> implements IBaseRepository<T> {
     } as FilterQuery<T>;
 
     const doc = await this._repository
-      .findOne(filter)
+      .findOne(filter, {
+        __v: 0,
+        _id: 0,
+      })
       .populate(this._populateOnFind);
 
     return doc;
   }
   async findByFields(fields: object): Promise<T> {
     const doc = await this._repository
-      .findOne(fields)
+      .findOne(fields, {
+        __v: 0,
+        _id: 0,
+      })
       .populate(this._populateOnFind);
     return doc;
   }
@@ -57,14 +71,20 @@ export abstract class MongoRepository<T> implements IBaseRepository<T> {
     } as FilterQuery<T>;
 
     const docs = await this._repository
-      .find(filter)
+      .find(filter, {
+        __v: 0,
+        _id: 0,
+      })
       .populate(this._populateOnFind);
 
     return docs;
   }
   async findManyByFields(fields: object): Promise<T[]> {
     const docs = await this._repository
-      .find(fields)
+      .find(fields, {
+        __v: 0,
+        _id: 0,
+      })
       .populate(this._populateOnFind);
     return docs;
   }

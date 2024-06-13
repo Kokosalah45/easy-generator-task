@@ -1,15 +1,31 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { AuthService } from './services/auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { SigninUserDTO } from './dtos/sigin-user.dto';
+import { AlreadyExistException } from 'src/shared/errors/AlreadyExistException';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('signup')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async signUp(@Body() user: CreateUserDto) {
-    console.log('user', user);
-    await this.authService.addUser(user);
+    const isUser = await this.authService.addUser(user);
+
+    if (!isUser) {
+      throw new AlreadyExistException('User');
+    }
+
+    return {
+      message: 'User created successfully',
+    };
   }
 
   @Post('signin')
