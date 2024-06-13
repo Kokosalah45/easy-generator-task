@@ -1,4 +1,4 @@
-import { MongoRepository } from 'shared/adapters/MongoBaseRepository';
+import { MongoRepository } from 'src/shared/adapters/MongoBaseRepository';
 import { User } from '../entities/user';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

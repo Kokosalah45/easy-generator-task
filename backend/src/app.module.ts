@@ -4,13 +4,20 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
+import databaseConfig from './shared/config/database';
+import jwtConfig from './shared/config/jwt';
+import passwordConfig from './shared/config/password';
 
-console.log('process.env.MONGO_URL:', process.env.MONGO_URL);
 @Module({
   imports: [
     UsersModule,
     AuthModule,
     MongooseModule.forRoot(process.env.MONGO_URL),
+    ConfigModule.forRoot({
+      load: [databaseConfig, jwtConfig, passwordConfig],
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

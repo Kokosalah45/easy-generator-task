@@ -1,4 +1,4 @@
-import { User } from '../entities/user';
+import { User } from '../../users/entities/user';
 
 export class CreateUserDto extends User {
   age: number;
