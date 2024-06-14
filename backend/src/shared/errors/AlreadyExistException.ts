@@ -1,7 +1,8 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import { BaseException } from './BaseException';
 
-export class AlreadyExistException extends HttpException {
+export class AlreadyExistException extends BaseException {
   constructor(entity: string) {
-    super(`${entity} already exists`, HttpStatus.CONFLICT);
+    super(`${entity} already exists`, 'ALREADY_EXIST', HttpStatus.CONFLICT);
   }
 }

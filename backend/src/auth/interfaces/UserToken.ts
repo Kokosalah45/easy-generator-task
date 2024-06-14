@@ -1,4 +1,4 @@
-export interface UserSession {
+export interface UserToken {
   email: string;
   iat: number;
   exp: number;

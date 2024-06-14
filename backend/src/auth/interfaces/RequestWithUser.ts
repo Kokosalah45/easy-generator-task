@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { UserSession } from './UserSession';
+import { UserToken } from './UserToken';
 
 export class RequestWithUser extends Request {
-  user: UserSession;
+  user: UserToken;
 }

@@ -3,8 +3,6 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  HttpCode,
-  HttpStatus,
   Post,
   Req,
   UseGuards,
@@ -17,12 +15,12 @@ import { AlreadyExistException } from 'src/shared/errors/AlreadyExistException';
 import { AuthGuard } from './guards/auth.guard';
 import { MeDTO } from './dtos/me.dto';
 import { RequestWithUser } from './interfaces/RequestWithUser';
+import { InvalidCredentialsException } from 'src/shared/errors/InvalidCredentialsException';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('signup')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async signUp(@Body() user: CreateUserDto) {
     const isUser = await this.authService.addUser(user);
 
@@ -37,7 +35,13 @@ export class AuthController {
 
   @Post('signin')
   async signIn(@Body() user: SigninUserDTO) {
-    return await this.authService.signIn(user);
+    const userToken = await this.authService.signIn(user);
+
+    if (!userToken) {
+      throw new InvalidCredentialsException();
+    }
+
+    return userToken;
   }
 
   @UseGuards(AuthGuard)
