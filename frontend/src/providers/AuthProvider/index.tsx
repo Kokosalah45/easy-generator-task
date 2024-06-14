@@ -18,14 +18,20 @@ type SignInParams = {
   password: string;
 };
 
+type ErrorData = {
+  message: string;
+  statusCode: number;
+  code: string;
+};
+
 type SignInOptions = {
-  onError?: () => void;
+  onError?: (error: ErrorData) => void;
   onSuccess?: () => void;
 };
 
 type AuthContextType = {
   user: User | null;
-  signIn: (props: SignInParams, options?: SignInOptions) => void;
+  signIn: (props: SignInParams, options?: SignInOptions) => Promise<void>;
   signOut: () => void;
   authState: AuthState;
 } | null;
@@ -85,7 +91,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         return;
       }
 
-      options?.onError?.();
+      const errorData = (await res.json()) as ErrorData;
+
+      options?.onError?.(errorData);
     },
     [getUserData],
   );
