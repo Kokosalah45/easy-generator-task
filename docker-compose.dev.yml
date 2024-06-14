@@ -42,7 +42,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    command: ['npm', 'run', 'dev']
     develop:
       watch:
         - action: sync
@@ -50,7 +49,7 @@ services:
           target: /app
 
         - action: rebuild
-          path: package.json
+          path: ./frontend/package.json
 
     networks:
       - destro

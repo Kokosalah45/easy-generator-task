@@ -16,7 +16,6 @@ import { SigninUserDTO } from './dtos/sigin-user.dto';
 import { AlreadyExistException } from 'src/shared/errors/AlreadyExistException';
 import { AuthGuard } from './guards/auth.guard';
 import { MeDTO } from './dtos/me.dto';
-import { Request } from 'express';
 import { RequestWithUser } from './interfaces/RequestWithUser';
 
 @Controller('auth')
