@@ -8,7 +8,13 @@ const AuthButtonsPanel = () => {
   return (
     <div className="flex gap-2">
       <Button
-        onClick={authState === 'authenticated' ? signOut : undefined}
+        onClick={
+          authState === 'authenticated'
+            ? async () => {
+                await signOut();
+              }
+            : undefined
+        }
         asChild={authState === 'unauthenticated'}
       >
         {authState === 'unauthenticated' ? (

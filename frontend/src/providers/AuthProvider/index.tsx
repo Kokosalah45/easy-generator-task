@@ -39,34 +39,44 @@ type SignUpParams = {
 type AuthContextType = {
   user: User | null;
   signIn: (props: SignInParams, options?: AuthOptions) => Promise<void>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
   signUp: (props: SignUpParams, options?: AuthOptions) => Promise<void>;
   authState: AuthState;
 } | null;
 
 const AuthContext = createContext<AuthContextType>(null);
 
-export const AuthProvider = ({ children }: PropsWithChildren) => {
+type StorageTypes = 'localStorage' | 'cookie';
+
+export const AuthProvider = ({
+  children,
+  storageType = 'localStorage',
+}: PropsWithChildren<{
+  storageType: StorageTypes;
+}>) => {
   const { state, dispatch } = useAuthReducer();
-  console.log({
-    userData: state.user,
-  });
 
   const getUserData = useCallback(async () => {
     try {
-      const token = TokenManager.getToken();
+      const headers = new Headers();
 
-      if (!token) {
-        throw new Error('Not authenticated');
+      if (storageType === 'localStorage') {
+        const token = TokenManager.getToken();
+        if (!token) {
+          dispatch({ type: 'CLEAR_USER' });
+          throw new Error('Not authenticated');
+        }
+
+        headers.append('Authorization', `Bearer ${token}`);
       }
 
-      const res = await fetch('/api/auth/me', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const res = await fetch(URLS.ME, {
+        headers,
+        credentials: 'include',
       });
 
       if (!res.ok) {
+        dispatch({ type: 'CLEAR_USER' });
         throw new Error('Not authenticated');
       }
 
@@ -75,11 +85,16 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     } catch (error) {
       dispatch({ type: 'SET_AUTH_STATE', payload: 'unauthenticated' });
     }
-  }, [dispatch]);
+  }, [dispatch, storageType]);
 
   const signIn = useCallback(
     async ({ email, password }: SignInParams, options?: AuthOptions) => {
-      const res = await fetch(URLS.SIGNIN, {
+      console.log('signIn', storageType);
+      const queryParams = new URLSearchParams();
+
+      queryParams.append('storageType', storageType);
+
+      const res = await fetch(`${URLS.SIGNIN}?${queryParams.toString()}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +118,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
       options?.onError?.(errorData);
     },
-    [getUserData],
+    [getUserData, storageType],
   );
 
   const signUp = useCallback(
@@ -128,13 +143,26 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     [],
   );
 
-  const signOut = useCallback(() => {
-    TokenManager.removeToken({
-      onRemove: () => {
+  const signOut = useCallback(async () => {
+    console.log('signOut', storageType);
+    if (storageType === 'localStorage') {
+      TokenManager.removeToken({
+        onRemove: () => {
+          dispatch({ type: 'CLEAR_USER' });
+        },
+      });
+      return;
+    }
+
+    await fetch('/api/auth/signout', {
+      method: 'POST',
+      credentials: 'include',
+    })
+      .then(() => {
         dispatch({ type: 'CLEAR_USER' });
-      },
-    });
-  }, [dispatch]);
+      })
+      .catch(() => {});
+  }, [dispatch, storageType]);
 
   useEffect(() => {
     getUserData();

@@ -41,7 +41,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AuthProvider>
+    <AuthProvider storageType="cookie">
       <RouterProvider router={router} />
     </AuthProvider>
   </React.StrictMode>,

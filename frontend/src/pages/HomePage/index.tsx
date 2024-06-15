@@ -5,7 +5,7 @@ const HomePage = () => {
   const { authState, user } = useAuth();
 
   const welcomeMessage =
-    authState === 'authenticated' ? `${user?.name} 🎉` : 'Anonymous user 🥷';
+    authState === 'authenticated' ? `${user?.name} 🎉` : 'Anonymous user 🕵';
 
   return (
     <PageLayout className="grid place-items-center">

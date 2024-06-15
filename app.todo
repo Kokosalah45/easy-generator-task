@@ -1,9 +1,7 @@
 Todos:
-    New:
-        ☐ Remove component repetition
-        ☐ Add a the ability to use http only cookies not just bearer tokens
-    Done:
-    Cancelled:
+    ☐ Remove component repetition
+    ✔ Add a the ability to use http only cookies not just bearer tokens @done(24-06-15 21:50)
+
 
 
     
