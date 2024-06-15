@@ -17,17 +17,24 @@ const router = createBrowserRouter([
         index: true,
         element: <HomePage />,
       },
-
       {
-        path: 'signin',
-        element: <SigninPage />,
-      },
-
-      {
-        path: 'signup',
-        element: <SignupPage />,
+        path: 'auth',
+        children: [
+          {
+            path: 'signin',
+            element: <SigninPage />,
+          },
+          {
+            path: 'signup',
+            element: <SignupPage />,
+          },
+        ],
       },
     ],
+  },
+  {
+    path: '*',
+    element: <div>404 Not Found</div>,
   },
 ]);
 

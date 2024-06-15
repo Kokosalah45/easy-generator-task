@@ -20,14 +20,14 @@ function App() {
               asChild={authState === 'unauthenticated'}
             >
               {authState === 'unauthenticated' ? (
-                <Link to="/signin">Sign in</Link>
+                <Link to="/auth/signin">Sign in</Link>
               ) : (
                 'Sign out'
               )}
             </Button>
             {authState === 'unauthenticated' && (
               <Button asChild>
-                <Link to="/signup">Sign up</Link>
+                <Link to="/auth/signup">Sign up</Link>
               </Button>
             )}
           </div>

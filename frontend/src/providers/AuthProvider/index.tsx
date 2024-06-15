@@ -11,6 +11,7 @@ import { TokenManager } from './services/token-manager';
 const URLS = {
   SIGNIN: '/api/auth/signin',
   ME: '/api/auth/me',
+  SIGNUP: '/api/auth/signup',
 };
 
 type SignInParams = {
@@ -29,10 +30,22 @@ type SignInOptions = {
   onSuccess?: () => void;
 };
 
+type SignUpParams = {
+  email: string;
+  password: string;
+  name: string;
+};
+
+type SignUpOptions = {
+  onError?: (error: ErrorData) => void;
+  onSuccess?: () => void;
+};
+
 type AuthContextType = {
   user: User | null;
   signIn: (props: SignInParams, options?: SignInOptions) => Promise<void>;
   signOut: () => void;
+  signUp: (props: SignUpParams, options?: SignUpOptions) => Promise<void>;
   authState: AuthState;
 } | null;
 
@@ -98,6 +111,31 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     [getUserData],
   );
 
+  const signUp = useCallback(
+    async (
+      { email, password, name }: SignUpParams,
+      options?: SignUpOptions,
+    ) => {
+      const res = await fetch(URLS.SIGNUP, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, name }),
+      });
+
+      if (res.ok) {
+        options?.onSuccess?.();
+        return;
+      }
+
+      const errorData = (await res.json()) as ErrorData;
+
+      options?.onError?.(errorData);
+    },
+    [],
+  );
+
   const signOut = useCallback(() => {
     TokenManager.removeToken({
       onRemove: () => {
@@ -117,6 +155,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         authState: state.authState,
         signIn,
         signOut,
+        signUp,
       }}
     >
       {children}

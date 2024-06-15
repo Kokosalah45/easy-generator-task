@@ -184,7 +184,9 @@ const GlobalFormMessage = React.forwardRef<
       className={cn('text-sm font-medium text-destructive', className)}
       {...props}
     >
-      {body}
+      {Array.isArray(body)
+        ? body.map((message, index) => <span key={index}>{message}</span>)
+        : body}
     </p>
   );
 });

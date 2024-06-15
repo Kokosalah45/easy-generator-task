@@ -2,7 +2,7 @@ export const MIN_PASSWORD_LENGTH = 8;
 export const MAX_PASSWORD_LENGTH = 20;
 
 export const REGEX = {
-  NAME: /^[a-zA-Z]{3,}$/,
+  NAME: /^[a-zA-Z0-9]{3,}$/,
   PASSWORD: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).*$/,
 };
 
