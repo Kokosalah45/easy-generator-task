@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import databaseConfig from './shared/config/database';
 import jwtConfig from './shared/config/jwt';
 import passwordConfig from './shared/config/password';
+import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -22,4 +23,8 @@ import passwordConfig from './shared/config/password';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
