@@ -25,7 +25,7 @@ type ErrorData = {
   code: string;
 };
 
-type SignInOptions = {
+type AuthOptions = {
   onError?: (error: ErrorData) => void;
   onSuccess?: () => void;
 };
@@ -36,16 +36,11 @@ type SignUpParams = {
   name: string;
 };
 
-type SignUpOptions = {
-  onError?: (error: ErrorData) => void;
-  onSuccess?: () => void;
-};
-
 type AuthContextType = {
   user: User | null;
-  signIn: (props: SignInParams, options?: SignInOptions) => Promise<void>;
+  signIn: (props: SignInParams, options?: AuthOptions) => Promise<void>;
   signOut: () => void;
-  signUp: (props: SignUpParams, options?: SignUpOptions) => Promise<void>;
+  signUp: (props: SignUpParams, options?: AuthOptions) => Promise<void>;
   authState: AuthState;
 } | null;
 
@@ -83,7 +78,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, [dispatch]);
 
   const signIn = useCallback(
-    async ({ email, password }: SignInParams, options?: SignInOptions) => {
+    async ({ email, password }: SignInParams, options?: AuthOptions) => {
       const res = await fetch(URLS.SIGNIN, {
         method: 'POST',
         headers: {
@@ -112,10 +107,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   );
 
   const signUp = useCallback(
-    async (
-      { email, password, name }: SignUpParams,
-      options?: SignUpOptions,
-    ) => {
+    async ({ email, password, name }: SignUpParams, options?: AuthOptions) => {
       const res = await fetch(URLS.SIGNUP, {
         method: 'POST',
         headers: {

@@ -14,6 +14,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/providers/AuthProvider';
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
+import { EllipsisIcon } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -29,6 +31,7 @@ const formSchema = z.object({
 });
 
 const SignupForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,6 +46,8 @@ const SignupForm = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+
     await signUp(values, {
       onError: (error) => {
         form.setError('root', {
@@ -54,6 +59,8 @@ const SignupForm = () => {
         form.reset();
         navigate('/');
       },
+    }).then(() => {
+      setIsLoading(false);
     });
   };
 
@@ -61,7 +68,7 @@ const SignupForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 max-w-screen-md w-1/2 m-auto border-2 p-10 rounded-md border-slate-800"
+        className="space-y-8 max-w-screen-md w-1/2 m-auto border-2 p-10 rounded-md border-foreground/70"
       >
         <FormField
           control={form.control}
@@ -118,7 +125,10 @@ const SignupForm = () => {
         />
 
         <GlobalFormMessage />
-        <Button type="submit">Submit</Button>
+        <Button className="flex gap-2" type="submit">
+          <span>Submit</span>
+          {isLoading && <EllipsisIcon />}
+        </Button>
       </form>
     </Form>
   );

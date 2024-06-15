@@ -35,15 +35,14 @@ export const Header = ({
 
   return (
     <header
-      className={cn(
-        'flex justify-between items-center sticky top-0 p-4 row-start-1 row-end-2 container',
-        className,
-      )}
+      className={cn('sticky top-0 row-start-1 row-end-2', className)}
       {...props}
     >
-      <div className="flex items-center">{slots.start}</div>
-      <div className="flex items-center">{slots.center}</div>
-      <div className="flex items-center">{slots.end}</div>
+      <div className="container flex justify-between items-center">
+        <div className="flex items-center">{slots.start}</div>
+        <div className="flex items-center">{slots.center}</div>
+        <div className="flex items-center">{slots.end}</div>
+      </div>
     </header>
   );
 };

@@ -10,8 +10,8 @@ const HomePage = () => {
   return (
     <PageLayout className="grid place-items-center">
       <div className="text-center">
-        <h1>Welcome</h1>
-        <p>{welcomeMessage}</p>
+        <h1 className="text-4xl font-bold">Welcome</h1>
+        <h2 className="text-3xl font-semibold">{welcomeMessage}</h2>
       </div>
     </PageLayout>
   );

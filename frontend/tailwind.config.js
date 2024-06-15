@@ -19,7 +19,7 @@ module.exports = {
     },
     extend: {
       gridTemplateRows: {
-        'main-layout': '4rem 1fr',
+        'main-layout': '5rem 1fr',
       },
       colors: {
         border: 'hsl(var(--border))',

@@ -7,6 +7,7 @@ import { AuthProvider } from './providers/AuthProvider/index.tsx';
 import HomePage from './pages/HomePage/index.tsx';
 import SigninPage from './pages/SigninPage/index.tsx';
 import SignupPage from './pages/SignupPage/index.tsx';
+import NotFoundPage from './pages/NotFoundPage/index.tsx';
 
 const router = createBrowserRouter([
   {
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <div>404 Not Found</div>,
+    element: <NotFoundPage />,
   },
 ]);
 
